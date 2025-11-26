@@ -3,8 +3,16 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 
-// Load environment variables
+// Load environment variables FIRST
 dotenv.config();
+
+// DEBUG: Check if environment variables are loaded
+console.log('=== Environment Variables ===');
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('DB_USER:', process.env.DB_USER);
+console.log('DB_PASS:', process.env.DB_PASS ? '***' : 'UNDEFINED');
+console.log('DB_HOST:', process.env.DB_HOST);
+console.log('============================');
 
 const app = express();
 
@@ -13,13 +21,23 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
 
+// Import sequelize AFTER dotenv is configured
+const { default: sequelize } = await import("./config/db.js");
+
+// Test MySQL connection
+sequelize.authenticate()
+  .then(() => console.log(" MySQL Connected Successfully"))
+  .catch(err => console.error(" Connection Error:", err));
+
+// Sync all models
+sequelize.sync({ alter: false }) 
+  .then(() => console.log(" Models synced with MySQL"))
+  .catch(err => console.log(" Sync error:", err));
+
 // Default Route
 app.get("/", (req, res) => {
   res.send("Library Management System API is running...");
 });
-
-// Import routes
-// Example: app.use("/api/books", booksRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
