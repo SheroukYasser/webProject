@@ -2,17 +2,18 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
-
+import authRoutes from "./routes/authRoutes.js";
+import cookieParser from 'cookie-parser';
 // Load environment variables FIRST
 dotenv.config();
 
 // DEBUG: Check if environment variables are loaded
-console.log('=== Environment Variables ===');
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('DB_USER:', process.env.DB_USER);
-console.log('DB_PASS:', process.env.DB_PASS ? '***' : 'UNDEFINED');
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('============================');
+console.log("=== Environment Variables ===");
+console.log("DB_NAME:", process.env.DB_NAME);
+console.log("DB_USER:", process.env.DB_USER);
+console.log("DB_PASS:", process.env.DB_PASS ? "***" : "UNDEFINED");
+console.log("DB_HOST:", process.env.DB_HOST);
+console.log("============================");
 
 const app = express();
 
@@ -20,19 +21,26 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
-
+app.use(cookieParser());
 // Import sequelize AFTER dotenv is configured
 const { default: sequelize } = await import("./config/db.js");
 
 // Test MySQL connection
-sequelize.authenticate()
+sequelize
+  .authenticate()
   .then(() => console.log(" MySQL Connected Successfully"))
-  .catch(err => console.error(" Connection Error:", err));
+  .catch((err) => console.error(" Connection Error:", err));
 
 // Sync all models
-sequelize.sync({ alter: false }) 
+sequelize
+  .sync({ alter: false })
   .then(() => console.log(" Models synced with MySQL"))
-  .catch(err => console.log(" Sync error:", err));
+  .catch((err) => console.log(" Sync error:", err));
+
+// =========================
+//        ROUTES
+// =========================
+app.use("/auth", authRoutes);
 
 // Default Route
 app.get("/", (req, res) => {
@@ -52,3 +60,5 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
   console.log(` Server running on http://localhost:${PORT}`)
 );
+
+export default app;
