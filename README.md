@@ -1,4 +1,17 @@
 # webProject
+environment variables :
+PORT=5000
+DB_NAME=library_db 
+DB_USER=root 
+DB_PORT=3306 
+DB_PASS= 
+DB_HOST= 
+JWT_ACCESS_SECRET= 
+JWT_REFRESH_SECRET= 
+GOOGLE_CLIENT_ID= 
+GOOGLE_CLIENT_SECRET= 
+GOOGLE_CALLBACK_URL=http://localhost:5000/auth/google/callback 
+EMAIL_USER= EMAIL_PASS=
 | Variable               | Description                                                                        | Example / Notes                                                            |
 | ---------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | `PORT`                 | The port number your server will run on.                                           | `5000` (default for local development)                                     |
