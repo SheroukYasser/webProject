@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import authRoutes from "./routes/authRoutes.js";
+import bookRoutes from "./routes/bookRoutes.js";
+import reservationRoutes from "./routes/reservationRoutes.js";
 import cookieParser from 'cookie-parser';
 // Load environment variables FIRST
 dotenv.config();
@@ -41,6 +43,8 @@ sequelize
 //        ROUTES
 // =========================
 app.use("/auth", authRoutes);
+app.use("/books", bookRoutes);
+app.use("/reservations", reservationRoutes);
 
 // Default Route
 app.get("/", (req, res) => {
