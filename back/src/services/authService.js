@@ -82,7 +82,7 @@ class AuthService {
    */
   async generateTokensWithSession(payload) {
     const sessionId = crypto.randomBytes(32).toString('hex');
-    const accessToken = this.generateAccessToken(payload);
+    const accessToken = this.generateAccessToken(payload,sessionId);
     const refreshToken = this.generateRefreshToken(payload, sessionId);
 
     await Session.create({
