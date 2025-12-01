@@ -6,10 +6,6 @@ import bookModel from '../models/Books.js';
 const Reservation = reservationModel(sequelize, DataTypes);
 const Book = bookModel(sequelize, DataTypes);
 
-// Define associations if not already defined in models (they seem to have foreign keys but maybe not associations)
-// Ideally associations should be in models or a central place, but for now I'll use them here or just rely on IDs.
-// The models have `references` in definition, but Sequelize associations (belongsTo, hasMany) are better for eager loading.
-// I will stick to simple ID based logic for now to avoid complexity if associations aren't set up.
 
 class ReservationService {
     async createReservation(reservationData) {
