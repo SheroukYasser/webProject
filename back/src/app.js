@@ -7,7 +7,7 @@ import bookRoutes from "./routes/bookRoutes.js";
 import reservationRoutes from "./routes/reservationRoutes.js";
 import profileRoutes from "./routes/memberRoutes.js"
 import cookieParser from 'cookie-parser';
-import bcrypt from 'bcrypt'
+
 // Load environment variables FIRST
 dotenv.config();
 
@@ -62,8 +62,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-const hash = await bcrypt.hash("adminpass3", 10);
-console.log(hash);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () =>

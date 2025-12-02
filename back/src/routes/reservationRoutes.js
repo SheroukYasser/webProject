@@ -1,7 +1,7 @@
 // routes/reservationRoutes.js
 import express from 'express';
 import reservationController from '../controllers/reservationController.js';
-import { authenticate, authenticateWithSession, isMember } from '../middleware/authMiddleware.js';
+import { authenticate, authenticateWithSession, isMember , isLibrarian} from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -11,11 +11,12 @@ router.post('/',
   isMember,                 // Only members can create reservations
   reservationController.createReservation
 );
+router.get('/all-reservations-admin', authenticateWithSession, isLibrarian, reservationController.getAllReservationsForAdmin);
 
 // Get reservations - Read-only, filtered by role in controller
 router.get('/', 
   authenticate,  // Basic auth is sufficient for viewing
-  reservationController.getReservations
+  reservationController.getMyReservations
 );
 
 // Cancel reservation - Members only, modifies DB
@@ -24,5 +25,7 @@ router.put('/:id/cancel',
   isMember,                 // Only members can cancel
   reservationController.cancelReservation
 );
+router.post('/notify/:book_id', reservationController.notifyReservations);
+
 
 export default router;

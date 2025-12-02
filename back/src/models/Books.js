@@ -10,8 +10,21 @@ export default (sequelize, DataTypes) => {
     created_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
   }, {
     tableName: "books",
-    timestamps: false
-  });
+    timestamps: false,
+       hooks: {
+    async afterUpdate(book) {
+        const previous = book.previous('available_copies');
+        const now = book.available_copies;
+
+        // Trigger only when stock increases (prev < now)
+        if (now > previous) {
+            const reservationService = (await import("../services/reservationService.js")).default;
+            await reservationService.notifyNextReservations(book.book_id);
+        }
+    }
+}
+  }
+);
 
   return Book;
 };
