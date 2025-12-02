@@ -2,28 +2,28 @@ import reservationService from '../services/reservationService.js';
 
 class ReservationController {
     async createReservation(req, res, next) {
-    try {
-        // Take member_id from JWT token
-        const member_id = req.user.userId; 
-        const { book_id } = req.body;
+        try {
+            // Take member_id from JWT token
+            const member_id = req.user.userId;
+            const { book_id } = req.body;
 
-        const reservation = await reservationService.createReservation({ member_id, book_id });
-        res.status(201).json({ success: true, data: reservation });
-    } catch (error) {
-        next(error);
+            const reservation = await reservationService.createReservation({ member_id, book_id });
+            res.status(201).json({ success: true, data: reservation });
+        } catch (error) {
+            next(error);
+        }
     }
-}
 
 
     async getMyReservations(req, res, next) {
-    try {
-        const member_id = req.user.userId; // taken from JWT token
-        const reservations = await reservationService.getReservationsByMember(member_id);
-        res.status(200).json({ success: true, data: reservations });
-    } catch (error) {
-        next(error);
+        try {
+            const member_id = req.user.userId;
+            const reservations = await reservationService.getReservationsByMember(member_id);
+            res.status(200).json({ success: true, data: reservations });
+        } catch (error) {
+            next(error);
+        }
     }
-}
 
 
     async cancelReservation(req, res, next) {
@@ -34,7 +34,7 @@ class ReservationController {
             next(error);
         }
     }
-      async getAllReservationsForAdmin(req, res, next) {
+    async getAllReservationsForAdmin(req, res, next) {
         try {
             const reservations = await reservationService.getAllReservationsWithMembers();
             return res.status(200).json({
@@ -45,11 +45,11 @@ class ReservationController {
             next(error);
         }
     }
-   async notifyReservations(req, res) {
+    async notifyReservations(req, res) {
         try {
             const { book_id } = req.params;
             const result = await reservationService.notifyNextReservations(Number(book_id));
-            
+
             res.status(200).json({
                 success: true,
                 message: result.message,

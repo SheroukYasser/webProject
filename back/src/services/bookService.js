@@ -1,5 +1,5 @@
 import sequelize from '../config/db.js';
-import { DataTypes } from 'sequelize';
+import { DataTypes, Op } from 'sequelize';
 import bookModel from '../models/Books.js';
 
 const Book = bookModel(sequelize, DataTypes);
@@ -9,8 +9,21 @@ class BookService {
     return await Book.create(bookData);
   }
 
-  async getAllBooks() {
-    return await Book.findAll();
+  async getAllBooks(queryParams = {}) {
+    const { title, author, genre } = queryParams;
+    const where = {};
+
+    if (title) {
+      where.title = { [Op.like]: `%${title}%` };
+    }
+    if (author) {
+      where.author = { [Op.like]: `%${author}%` };
+    }
+    if (genre) {
+      where.genre = { [Op.like]: `%${genre}%` };
+    }
+
+    return await Book.findAll({ where });
   }
 
   async getBookById(id) {
