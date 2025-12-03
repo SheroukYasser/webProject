@@ -7,6 +7,8 @@ import bookRoutes from "./routes/bookRoutes.js";
 import reservationRoutes from "./routes/reservationRoutes.js";
 import profileRoutes from "./routes/memberRoutes.js"
 import cookieParser from 'cookie-parser';
+import borrowingRoutes from './routes/borrowRoutes.js';
+import fineRoutes from './routes/fineRoutes.js';
 import bcrypt from 'bcrypt'
 // Load environment variables FIRST
 dotenv.config();
@@ -48,7 +50,9 @@ app.use("/auth", authRoutes);
 app.use("/books", bookRoutes);
 app.use("/reservations", reservationRoutes);
 app.use('/profile',profileRoutes)
-,
+app.use('/borrowings', borrowingRoutes);
+app.use('/fines', fineRoutes);
+
 // Default Route
 app.get("/", (req, res) => {
   res.send("Library Management System API is running...");
