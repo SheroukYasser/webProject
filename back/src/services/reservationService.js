@@ -222,6 +222,28 @@ async notifyNextReservations(book_id) {
 
         return await this.transporter.sendMail(mailOptions);
     }
+
+
+    async getReservationsByUserIdForLibrarian(memberId) {
+  return await Reservation.findAll({
+    where: {
+      member_id: memberId,
+      status: { [Op.ne]: "cancelled" }
+    },
+    include: [
+      {
+        model: Member,
+        attributes: ["full_name", "email", "phone"]
+      },
+      {
+        model: Book,
+        attributes: ["title", "author"]
+      }
+    ],
+    order: [["reservation_date", "DESC"]]
+  });
+}
+
 }
 
 export default new ReservationService();

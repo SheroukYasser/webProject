@@ -145,6 +145,153 @@ class ProfileController {
       });
     }
   }
+  async deleteAccount(req, res) {
+    try {
+      const authenticatedUserId = req.user.userId; // from JWT token
+
+      const result = await ProfileService.deleteAccount(
+        authenticatedUserId,
+        authenticatedUserId
+      );
+
+      return res.status(200).json({
+        success: true,
+        data: result
+      });
+
+    } catch (error) {
+      // Handle specific error messages
+      if (error.message.includes('not found')) {
+        return res.status(404).json({
+          success: false,
+          message: error.message
+        });
+      }
+
+      if (error.message.includes('Cannot delete account')) {
+        return res.status(400).json({
+          success: false,
+          message: error.message
+        });
+      }
+
+      // Generic error
+      console.error('Delete account error:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to delete account',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  }
+
+
+  async deleteLibrarianAccountController(req, res) {
+    try {
+      const authenticatedUserId = req.user.userId; // from JWT token
+
+      const result = await LibrarianService.deleteLibrarianAccount(
+        authenticatedUserId,
+        authenticatedUserId
+      );
+
+      return res.status(200).json({
+        success: true,
+        data: result
+      });
+
+    } catch (error) {
+      // Handle specific error messages
+      if (error.message.includes('not found')) {
+        return res.status(404).json({
+          success: false,
+          message: error.message
+        });
+      }
+
+      // Generic error
+      console.error('Delete librarian account error:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to delete account',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  }
+
+
+
+
+
+  /**
+   * Get all members with borrowings and book details
+   * GET /api/members
+   * Accessible only by librarians
+   */
+  async getAllMembers(req, res) {
+    try {
+      const { search, sortBy, order } = req.query;
+
+      // Call service with filters
+      const result = await ProfileService.getAllMembers({ search, sortBy, order });
+
+      return res.status(200).json({
+        success: true,
+        data: result
+      });
+
+    } catch (error) {
+      console.error('Get all members error:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve members',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  }
+
+  /**
+   * Get single member by ID with borrowings and book details
+   * GET /api/members/:id
+   * Accessible only by librarians
+   */
+  async getMemberById(req, res) {
+    try {
+      const memberId = parseInt(req.params.id);
+
+      if (isNaN(memberId)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid member ID'
+        });
+      }
+
+      // Call service
+      const member = await ProfileService.getMemberById(memberId);
+
+      return res.status(200).json({
+        success: true,
+        data: member
+      });
+
+    } catch (error) {
+      if (error.message.includes('not found')) {
+        return res.status(404).json({
+          success: false,
+          message: error.message
+        });
+      }
+
+      console.error('Get member error:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve member',
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
+    }
+  }
+
+
 }
 
 export default new ProfileController();

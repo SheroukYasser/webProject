@@ -66,6 +66,25 @@ class ReservationController {
             });
         }
     }
+    async getReservationsByUserId(req, res) {
+    try {
+      const { userId } = req.params;
+
+      const reservations = await reservationService.getReservationsByUserIdForLibrarian(userId);
+
+      return res.json({
+        success: true,
+        reservations
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      return res.status(500).json({
+        success: false,
+        message: error.message
+      });
+    }
+  }
+
 }
 
 export default new ReservationController();

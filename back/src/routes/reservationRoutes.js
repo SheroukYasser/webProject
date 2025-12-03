@@ -11,6 +11,7 @@ router.post('/',
   isMember,                 // Only members can create reservations
   reservationController.createReservation
 );
+
 router.get('/all-reservations-admin', authenticateWithSession, isLibrarian, reservationController.getAllReservationsForAdmin);
 
 // Get reservations - Read-only, filtered by role in controller
@@ -26,6 +27,11 @@ router.put('/:id/cancel',
   reservationController.cancelReservation
 );
 router.post('/notify/:book_id', reservationController.notifyReservations);
-
+router.get(
+  "/user/:userId",
+  authenticate,        // verify JWT token
+  isLibrarian,         // librarian only
+  reservationController.getReservationsByUserId
+);
 
 export default router;
