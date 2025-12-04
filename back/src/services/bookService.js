@@ -10,22 +10,42 @@ class BookService {
   }
 
   async getAllBooks(queryParams = {}) {
-    const { title, author, genre } = queryParams;
+    const { search, title, author, category } = queryParams;
     const where = {};
 
-    if (title) {
-      where.title = { [Op.like]: `%${title}%` };
+    if (search) {
+      where[Op.or] = [
+        { title: { [Op.like]: `%${search}%` } },
+        { author: { [Op.like]: `%${search}%` } },
+        { category: { [Op.like]: `%${search}%` } }
+      ];
     }
-    if (author) {
-      where.author = { [Op.like]: `%${author}%` };
-    }
-    if (genre) {
-      where.genre = { [Op.like]: `%${genre}%` };
-    }
+
+    if (title) where.title = { [Op.like]: `%${title}%` };
+    if (author) where.author = { [Op.like]: `%${author}%` };
+    if (category) where.category = { [category.like]: `%${category}%` };
 
     return await Book.findAll({ where });
   }
 
+  async getFilteredBooks(query = {}) {
+    const { author, category, year } = query;
+    const where = {};
+
+    if (author) {
+      where.author = { [Op.like]: `%${author}%` };
+    }
+
+    if (category) {
+      where.category = { [Op.like]: `%${category}%` };
+    }
+
+    if (year) {
+      where.publication_year = year;
+    }
+
+    return await Book.findAll({ where });
+  }
   async getBookById(id) {
     return await Book.findByPk(id);
   }

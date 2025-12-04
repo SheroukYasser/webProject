@@ -7,8 +7,9 @@ const router = express.Router();
 // ----------------------------------------------
 // PUBLIC ROUTES (anyone can view)
 // ----------------------------------------------
-router.get('/',authenticate, bookController.getAllBooks);
-router.get('/:id',authenticate, bookController.getBookById);
+router.get('/', authenticate, bookController.getAllBooks);
+router.get('/filter', authenticate, bookController.getFilteredBooks);
+router.get('/:id', authenticate, bookController.getBookById);
 
 // ----------------------------------------------
 // LIBRARIAN-ONLY ROUTES

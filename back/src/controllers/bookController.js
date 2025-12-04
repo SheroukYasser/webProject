@@ -12,7 +12,16 @@ class BookController {
 
     async getAllBooks(req, res, next) {
         try {
-            const books = await bookService.getAllBooks(req.query);
+            const books = await bookService.getAllBooks(req.query)
+            res.status(200).json({ success: true, data: books });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getFilteredBooks(req, res, next) {
+        try {
+            const books = await bookService.getFilteredBooks(req.query);
             res.status(200).json({ success: true, data: books });
         } catch (error) {
             next(error);
