@@ -22,7 +22,7 @@ const BooksPage = () => {
         return;
       }
 
-      const res = await axios.get("http://localhost:5000/api/books", {
+      const res = await axios.get("http://localhost:5000/books", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -61,7 +61,7 @@ const BooksPage = () => {
     }
 
     const res = await axios.post(
-      `http://localhost:5000/api/reservations/${bookId}`,
+      `http://localhost:5000/borrowings/borrow`,
     //   bookId: book.book_id
        {  },                  // <-- إرسال book_id في body
       { headers: { Authorization: `Bearer ${token}` } }

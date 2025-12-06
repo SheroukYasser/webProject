@@ -10,13 +10,15 @@ class PasswordController {
       const { email } = req.body;
       const result = await PasswordService.requestPasswordReset(email);
 
-      // Save email in a cookie
-      res.cookie('pendingEmail', email, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 10 * 60 * 1000
-      });
+      // Use domain as '127.0.0.1' to match frontend
+res.cookie('pendingEmail', email, {
+  httpOnly: true,
+  secure: false,          // local dev over HTTP
+  sameSite: 'lax',        // allow sending on POST from same origin
+  domain: 'localhost',    // must match frontend host
+  path: '/',
+  maxAge: 10 * 60 * 1000
+});
 
       res.status(200).json(result);
     } catch (err) {
@@ -31,13 +33,15 @@ class PasswordController {
       const email = req.cookies.pendingEmail;
       if (!email) throw new Error('No pending email');
 
-      await PasswordService.verifyCode(email, code);
+      PasswordService.verifyCode(email, code);
 
       // Mark code as verified in cookie
       res.cookie('codeVerified', true, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure:false,
+        sameSite: 'lax',
+        domain: 'localhost',  
+        path: '/',
         maxAge: 10 * 60 * 1000
       });
 
